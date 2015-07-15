@@ -23,12 +23,23 @@ namespace DesktopHelper
             XmlNode selectSingleNode = xmlConditions.SelectSingleNode("/current/temperature");
             if (selectSingleNode != null)
                 if (selectSingleNode.Attributes != null)
-                    _instance.TempC = selectSingleNode.Attributes["value"].InnerText;
+                    _instance.TempC = selectSingleNode.Attributes["value"].InnerText; // K
 
             selectSingleNode = xmlConditions.SelectSingleNode("/current/humidity");
             if (selectSingleNode != null)
                 if (selectSingleNode.Attributes != null)
-                    _instance.Humidity = selectSingleNode.Attributes["value"].InnerText;
+                    _instance.Humidity = selectSingleNode.Attributes["value"].InnerText; //%
+
+            selectSingleNode = xmlConditions.SelectSingleNode("/current/pressure");
+            if (selectSingleNode != null)
+                if (selectSingleNode.Attributes != null)
+                    _instance.Pressure = selectSingleNode.Attributes["value"].InnerText; //hPa
+
+            selectSingleNode = xmlConditions.SelectSingleNode("/current/wind/speed");
+            if (selectSingleNode != null)
+                if (selectSingleNode.Attributes != null)
+                    _instance.Wind = selectSingleNode.Attributes["value"].InnerText; //h
+
         }
 
         public static WeatherTemplate GetInstance(string location)
@@ -52,15 +63,16 @@ namespace DesktopHelper
        
 
 
-            string _city = "No Data";
-            string _dayOfWeek = DateTime.Now.DayOfWeek.ToString();
-            string _condition = "No Data";
-            string _tempF = "No Data";
-            string _tempC = "No Data";
-            string _humidity = "No Data";
-            string _wind = "No Data";
-            string _high = "No Data";
-            string _low = "No Data";
+           private string _city = "No Data";
+           private string _dayOfWeek = DateTime.Now.DayOfWeek.ToString();
+           private string _condition = "No Data";
+           private string _tempF = "No Data";
+           private string _tempC = "No Data";
+           private string _humidity = "No Data";
+           private string _wind = "No Data";
+           private string _high = "No Data";
+           private string _low = "No Data";
+           private string _pressure = "No Data";
 
             public string City
             {
@@ -115,8 +127,11 @@ namespace DesktopHelper
                 get { return _low; }
                 set { _low = value; }
             }
-        
 
-
+        public string Pressure
+        {
+            get { return _pressure; }
+            set { _pressure = value; }
+        }
     }
 }

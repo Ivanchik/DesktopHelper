@@ -18,6 +18,8 @@ namespace DesktopHelper
         private void Form1_Load(object sender, EventArgs e)
         {
             if (e == null) throw new ArgumentNullException("e");
+
+
             label1.Text = GetPublicIp();
             GetInfoByCity(PublicData.magnitogorsk);
            
@@ -42,6 +44,9 @@ namespace DesktopHelper
                 double m = Convert.ToDouble(Convert.ToDouble(n, CultureInfo.InvariantCulture.NumberFormat)) - 273; //Kelvin -> Celcius 
                 label2.Text = string.Format("{0} C{1}", m, GetSymbol("Celsius"));
                 label3.Text = GetWeather(cityName).Humidity;
+                label4.Text = GetWeather(cityName).Pressure;
+                label5.Text = GetWeather(cityName).Wind;
+
 
             }
             catch (ArgumentException)
