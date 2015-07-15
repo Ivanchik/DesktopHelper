@@ -18,20 +18,38 @@ namespace DesktopHelper
         private void Form1_Load(object sender, EventArgs e)
         {
             if (e == null) throw new ArgumentNullException("e");
-            label1.Text = GetPublicIP();
-            GetInfoByCity(PublicData._magnitogorsk);
+            label1.Text = GetPublicIp();
+            GetInfoByCity(PublicData.magnitogorsk);
            
         }
 
-
+        private string GetSymbol(string symbol)
+        {
+            if (symbol == "Celsius")
+            {
+                int value = int.Parse("00B0", NumberStyles.HexNumber);
+                return char.ConvertFromUtf32(value);
+            }
+            return null;
+        }
 
 
         void GetInfoByCity(string cityName)
         {
-            string n = GetWeather(cityName).TempC;
-            double m = Convert.ToDouble(Convert.ToDouble(n, CultureInfo.InvariantCulture.NumberFormat)) - 273; //Kelvin -> Celcius 
-            label2.Text = string.Format("{0} C",  m);
-            label3.Text = GetWeather(cityName).Humidity;
+            try
+            {
+                string n = GetWeather(cityName).TempC;
+                double m = Convert.ToDouble(Convert.ToDouble(n, CultureInfo.InvariantCulture.NumberFormat)) - 273; //Kelvin -> Celcius 
+                label2.Text = string.Format("{0} C{1}", m, GetSymbol("Celsius"));
+                label3.Text = GetWeather(cityName).Humidity;
+
+            }
+            catch (ArgumentException)
+            {
+                MessageBox.Show(@"Error in arguments exception");
+
+            }
+            
         }
 
 
@@ -39,23 +57,19 @@ namespace DesktopHelper
         public WeatherTemplate GetWeather(string location)
         {
 
-            WeatherTemplate conditions = new WeatherTemplate();
+            WeatherTemplate conditions = WeatherTemplate.GetInstance(location);
 
-            XmlDocument xmlConditions = new XmlDocument();
-            xmlConditions.Load(string.Format("http://api.openweathermap.org/data/2.5/weather?q={0}&mode=xml",location));
 
-                conditions.TempC = xmlConditions.SelectSingleNode("/current/temperature").Attributes["value"].InnerText;
-            
 
             return conditions;
 
         }
 
-        public string GetPublicIP()
+        public string GetPublicIp()
         {
             try
             {
-                String direction = "";
+                String direction;
                 WebRequest request = WebRequest.Create("http://checkip.dyndns.org/");
                 
                 using (WebResponse response = request.GetResponse())
@@ -65,9 +79,9 @@ namespace DesktopHelper
                     }
 
                 //Search for the ip in the html
-                int addressLenght = 9;
-                int first = direction.IndexOf("Address: ") + addressLenght;
-                int last = direction.LastIndexOf("</body>");
+                const int addressLenght = 9;
+                int first = direction.IndexOf("Address: ", StringComparison.Ordinal) + addressLenght;
+                int last = direction.LastIndexOf("</body>", StringComparison.Ordinal);
                 direction = direction.Substring(first, last - first);
 
                 return direction;
